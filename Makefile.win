@@ -1,0 +1,39 @@
+# Project: ceo
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = global.o linked_list.o main.o mother.o $(RES)
+LINKOBJ  = global.o linked_list.o main.o mother.o $(RES)
+LIBS =  -L"G:/Dev-Cpp/lib"  
+INCS =  -I"G:/Dev-Cpp/include" 
+CXXINCS =  -I"G:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"G:/Dev-Cpp/include/c++/3.4.2/backward"  -I"G:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"G:/Dev-Cpp/include/c++/3.4.2"  -I"G:/Dev-Cpp/include" 
+BIN  = ceo.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before ceo.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "ceo.exe" $(LIBS)
+
+global.o: global.cpp
+	$(CPP) -c global.cpp -o global.o $(CXXFLAGS)
+
+linked_list.o: linked_list.c
+	$(CPP) -c linked_list.c -o linked_list.o $(CXXFLAGS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+mother.o: mother.cpp
+	$(CPP) -c mother.cpp -o mother.o $(CXXFLAGS)
