@@ -32,3 +32,10 @@ CEmployee::CEmployee()
 		revenueGeneration = baseEmployeeRevenueGain*1.05;
 */
 }
+
+CEmployee::~CEmployee()
+{
+	employeeCount--;
+	cost_increase(-wage);
+	revenue_increase(-revenueGeneration);
+}

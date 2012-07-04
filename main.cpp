@@ -13,6 +13,8 @@ void display_game_menu(void)
 {
 	printf("1. Hire employee [+%.1f%% cost/turn] [+%.1f%% rev/turn]\n", baseWage, baseEmployeeRevenueGain);
 	printf("2. Advertise [-$%.0f] [+up to %.1f%% rev]\n", advertiseCost, advertiseGain);
+	printf("3. Add a store [-$%.0f] [Employee limit +%d]\n", addStoreCost, employeeLimitPerStore);
+	printf("X. Fire employee\n");
 	printf("[Enter] = next turn\n");
 	printf("Employees = %d\n\n", employeeCount);
 	printf("Money = $%.0f\n\n", money);
@@ -44,7 +46,19 @@ int main(void)
 				add_action(ADVERT);
 			}
 		}
-		else if(action == 13) {
+		else if(action == '3') {
+            printf("Will add a store\n");
+			add_action(ADD_STORE);
+		}
+		else if(action == 'x') {
+			if(get_item_from_list(employeeList,0)) {
+				printf("Will fire an employee\n");
+				add_action(FIRE_EMP);
+			} else {
+				printf("Can't fire an employee if you have none, idiot!\n");
+			}
+		}
+		else if(action == 13) { // 13 = enter
 			printf("Processing turn...\n\n\n");
 			process_turn();
 			display_game_menu();

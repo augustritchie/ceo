@@ -9,6 +9,7 @@ extern double baseWage;
 class CEmployee {
 	public:
 		CEmployee();
+		~CEmployee();
 		double wage;
 		int employeeNum;
 		double revenueGeneration;

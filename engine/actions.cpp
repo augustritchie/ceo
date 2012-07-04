@@ -3,12 +3,16 @@
 #include "money.hpp"
 #include "actions.hpp"
 
+linked_list* actionQ = new_linked_list();
 
 double advertiseCost = 2000;
 double advertiseGain = 2.0; // potential % rev gain
 bool advertising = false;
 
-linked_list* actionQ = new_linked_list();
+double addStoreCost = 2e4;
+int storeCount = 1;
+int employeeLimitPerStore = 5;
+
 
 
 void add_action(int theAction)
@@ -22,7 +26,14 @@ void add_action(int theAction)
 
 void hire_employee(void)
 {
-	CEmployee* newEmp = new CEmployee();
+	if(employeeCount < employeeLimitPerStore*storeCount)
+		new CEmployee();
+}
+
+void fire_employee(void)
+{
+	CEmployee* toBeFired = (CEmployee*)remove_last_item_from_list(employeeList);
+	delete toBeFired;
 }
 
 void advertise(void)
@@ -32,6 +43,12 @@ void advertise(void)
 	revenue_increase(revGain);
 	printf("Adverising revenue increase = %.2f%%\n", revGain);
 	advertising = false;
+}
+
+void add_store(void)
+{
+	one_time_cost(addStoreCost);
+	storeCount++;
 }
 
 void process_turn(void)
@@ -48,6 +65,10 @@ void process_turn(void)
 			hire_employee();
 		} else if(actionItem == ADVERT) {
 			advertise();
+		} else if(actionItem == FIRE_EMP) {
+			fire_employee();
+		} else if(actionItem == ADD_STORE) {
+			add_store();
 		}
 		free(pAction);
 	}
