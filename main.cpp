@@ -5,12 +5,12 @@
 #include "global.hpp"
 
 
-int advertiseCost;
+int advertiseCost = 2000;
+bool advertising = false;
 
-int employeeCost;
 int employeeCount = 0;
-int baseEmployeeRevenueGain = 550;
-int baseWage = 500;
+double baseEmployeeRevenueGain = 550;
+double baseWage = 500;
 
 linked_list* actionQ = new_linked_list();
 linked_list* employeeList = new_linked_list();
@@ -19,9 +19,9 @@ enum Actions { HIRE_EMP, ADVERT };
 class CEmployee {
 	public:
 		CEmployee();
-		int wage;
+		double wage;
 		int employeeNum;
-		int revenueGeneration;
+		double revenueGeneration;
 		bool newb;
 };
 
@@ -40,12 +40,12 @@ CEmployee::CEmployee()
 		revenueGeneration = baseEmployeeRevenueGain;
 	if(variance == 2)
 		revenueGeneration = baseEmployeeRevenueGain*1.05;
-	printf("revenueGeneration = %d\n", revenueGeneration);
+	printf("revenueGeneration = %.0f\n", revenueGeneration);
 }
 
-void expense(int amount)
+void expense(double amount)
 {
-	printf("New expense. Amount = %d.\n", amount);
+//	printf("New expense. Amount = %.0f.\n", amount);
 	money -= amount;
 	if(money <= 0) {
 		printf("Out of fuckin' money!");
@@ -53,9 +53,9 @@ void expense(int amount)
 	}
 }
 
-void income(int amount)
+void income(double amount)
 {
-	printf("New income. Amount = %d\n", amount);
+//	printf("New income. Amount = %.0f\n", amount);
 	money += amount;
 }
 
@@ -127,21 +127,21 @@ void process_turn(void)
 	printf("Started the turn with $%.0f. Ended the turn with $%.0f. ", tempMoney, money);
 	if(money > tempMoney)
         printf("+%.2f%%\n",(money-tempMoney)/tempMoney*100.0);
-    if(money < tempMoney)
+    else if(money < tempMoney)
         printf("-%.2f%%\n", (tempMoney-money)/tempMoney*100.0);
+    else
+        printf("No change\n");
 }
 
 int main(void)
 {
-	employeeCost = 500;
-	advertiseCost = 50;
 	char action = 0;
 	int* pAction;
 	money = 10000;
 	printf("\n\nYou have a store and $10000. Go.\n");
 	while(action != 27) {
-		printf("1. Hire employee [-$%d/turn] [+$%d/turn +/-5%%]\n", baseWage, baseEmployeeRevenueGain);
-		printf("2. Advertise [-$%d]\n", advertiseCost);
+		printf("1. Hire employee [-$%.0f/turn] [+$%.0f/turn +/-5%%]\n", baseWage, baseEmployeeRevenueGain);
+		printf("2. Advertise [-$%.0f]\n", advertiseCost);
 		printf("[Enter] = next turn\n");
 		printf("Employees = %d\n", employeeCount);
 		printf("Money = $%.0f\n\n\n", money);
@@ -160,7 +160,6 @@ int main(void)
 			process_turn();
 		}
 		else printf("\n\n");
-		
 	}
 //	printf("Random num = %.7f\n",RandGen.Random());
 	
