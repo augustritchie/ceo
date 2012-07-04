@@ -3,11 +3,11 @@
 #define GLOBAL_HPP
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctime>
 #include "randomc.h"
 #include <math.h>
-#include <vector>
-#include "linked_list.h"
+#include "../linked_list.h"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ extern double money;
 
 extern CRandomMother RandGen;
 
-int getrand(int);
+extern int getrand(int);
 
 
 #endif

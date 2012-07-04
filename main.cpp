@@ -1,62 +1,60 @@
-#include <stdlib.h>
 #include <unistd.h>
 //#include <termios.h>
 #include <conio.h>
-#include "global.hpp"
+#include "engine/global.hpp"
+#include "engine/money.hpp"
+#include "engine/employee.hpp"
+#include "engine/actions.hpp"
 
 
-int advertiseCost = 2000;
-bool advertising = false;
 
-int employeeCount = 0;
-double baseEmployeeRevenueGain = 550;
-double baseWage = 500;
 
-linked_list* actionQ = new_linked_list();
-linked_list* employeeList = new_linked_list();
-enum Actions { HIRE_EMP, ADVERT };
-
-class CEmployee {
-	public:
-		CEmployee();
-		double wage;
-		int employeeNum;
-		double revenueGeneration;
-		bool newb;
-};
-
-CEmployee::CEmployee()
+void display_game_menu(void)
 {
-	int variance;
-	newb = true;
-	wage = baseWage;
-	employeeNum = employeeCount;
-	employeeCount++;
-	add_item_to_end_of_list(employeeList, this);
-	variance = getrand(3);
-	if(variance == 0)
-		revenueGeneration = baseEmployeeRevenueGain*.95;
-	if(variance == 1)
-		revenueGeneration = baseEmployeeRevenueGain;
-	if(variance == 2)
-		revenueGeneration = baseEmployeeRevenueGain*1.05;
-	printf("revenueGeneration = %.0f\n", revenueGeneration);
+	printf("1. Hire employee [+%.1f%% cost/turn] [+%.1f%% rev/turn]\n", baseWage, baseEmployeeRevenueGain);
+	printf("2. Advertise [-$%.0f] [+up to %.1f%% rev]\n", advertiseCost, advertiseGain);
+	printf("[Enter] = next turn\n");
+	printf("Employees = %d\n\n", employeeCount);
+	printf("Money = $%.0f\n\n", money);
+	printf("Base Revenue: $%.2f, Actual: $%.2f, Base Cost: $%.2f, Actual: $%.2f\n", baseRevenue, actualRevenue, baseCost, actualCost);
+	printf("Net income: $%.2f, Net Expenses: $%.2f\n\n", netIncome, netExpense);
+	printf("Esc to exit\n\n\n");
 }
 
-void expense(double amount)
+int main(void)
 {
-//	printf("New expense. Amount = %.0f.\n", amount);
-	money -= amount;
-	if(money <= 0) {
-		printf("Out of fuckin' money!");
-		exit(0);
+    char action = 0;
+    int* pAction;
+    money = 10000;
+    new CEmployee;
+    printf("\n\nYou have a store, 1 employee, and $10000. Go.\n");
+    display_game_menu();
+    while(action != 27) {
+		action = getch();
+		if(action == '1') {
+			printf("Will hire an employee!\n");
+			add_action(HIRE_EMP);
+		}
+		else if(action == '2') {
+            if(advertising) {
+                printf("Can't advertise more than once per turn\n");
+            } else {
+				advertising = true;
+                printf("Will advertise!\n");
+				add_action(ADVERT);
+			}
+		}
+		else if(action == 13) {
+			printf("Processing turn...\n\n\n");
+			process_turn();
+			display_game_menu();
+		}
+		else printf("\n\n");
 	}
-}
-
-void income(double amount)
-{
-//	printf("New income. Amount = %.0f\n", amount);
-	money += amount;
+//	printf("Random num = %.7f\n",RandGen.Random());
+	
+	printf("\n");
+	return 0;
 }
 
 /*
@@ -74,97 +72,5 @@ int getch(void)
 	return ch; //return received char 
 }
 */
-void add_action(int theAction)
-{
-	int* pAction;
-	pAction = (int*)malloc(sizeof(int));
-	*pAction = theAction;
-	add_item_to_end_of_list(actionQ, pAction);
-}
-
-
-void hire_employee(void)
-{
-	CEmployee* newEmp = new CEmployee();
-}
-
-void advertise(void)
-{
-	printf("In advertise!\n");
-}
-
-void process_turn(void)
-{
-	int actionItem;
-	int* pAction;
-	int i;
-	CEmployee* curEmp;
-	double tempMoney = money;
-	// active actions happen first, followed by passives
-	while(pAction = (int*)remove_first_item_from_list(actionQ)) {
-		actionItem = *pAction;
-		if(actionItem == HIRE_EMP) {
-			hire_employee();
-		} else if(actionItem == ADVERT) {
-			advertise();
-		}
-		free(pAction);
-	}
-	// passives
-	for(i = 0; i < employeeCount; i++) {
-		curEmp = (CEmployee*) get_item_from_list(employeeList, i);
-		expense(curEmp->wage);
-		if(curEmp->newb) {
-			curEmp->newb = false;
-			continue;
-		}
-		income(curEmp->revenueGeneration);
-	}
-	// results
-	if(money > 10000) {
-		printf("Business level 2 achieved!\n");
-	}
-	printf("Started the turn with $%.0f. Ended the turn with $%.0f. ", tempMoney, money);
-	if(money > tempMoney)
-        printf("+%.2f%%\n",(money-tempMoney)/tempMoney*100.0);
-    else if(money < tempMoney)
-        printf("-%.2f%%\n", (tempMoney-money)/tempMoney*100.0);
-    else
-        printf("No change\n");
-}
-
-int main(void)
-{
-	char action = 0;
-	int* pAction;
-	money = 10000;
-	printf("\n\nYou have a store and $10000. Go.\n");
-	while(action != 27) {
-		printf("1. Hire employee [-$%.0f/turn] [+$%.0f/turn +/-5%%]\n", baseWage, baseEmployeeRevenueGain);
-		printf("2. Advertise [-$%.0f]\n", advertiseCost);
-		printf("[Enter] = next turn\n");
-		printf("Employees = %d\n", employeeCount);
-		printf("Money = $%.0f\n\n\n", money);
-		printf("Esc to exit\n\n\n\n\n\n");
-		action = getch();
-		if(action == '1') {
-			printf("Will hire an employee!\n\n");
-			add_action(HIRE_EMP);
-		}
-		else if(action == '2') {
-			printf("Will advertise!\n\n");
-			add_action(ADVERT);
-		}
-		else if(action == 13) {
-			printf("Processing turn...\n");
-			process_turn();
-		}
-		else printf("\n\n");
-	}
-//	printf("Random num = %.7f\n",RandGen.Random());
-	
-	printf("\n");
-	return 0;
-}
 
 
