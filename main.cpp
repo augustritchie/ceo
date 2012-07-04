@@ -99,7 +99,7 @@ void process_turn(void)
 	int* pAction;
 	int i;
 	CEmployee* curEmp;
-	int tempMoney = money;
+	double tempMoney = money;
 	// active actions happen first, followed by passives
 	while(pAction = (int*)remove_first_item_from_list(actionQ)) {
 		actionItem = *pAction;
@@ -124,16 +124,11 @@ void process_turn(void)
 	if(money > 10000) {
 		printf("Business level 2 achieved!\n");
 	}
-	printf("Started the turn with $%d. Ended the turn with $%d. %.2f%% ", tempMoney, money, ((double)tempMoney/(double)money));
-	if(tempMoney > money) {
-		printf("decrease.\n");
-	}
-	else if(tempMoney == money) {
-		printf("Broke even.\n");
-	}
-	else if(tempMoney < money) {
-		printf("increase.\n");
-	}
+	printf("Started the turn with $%.0f. Ended the turn with $%.0f. ", tempMoney, money);
+	if(money > tempMoney)
+        printf("+%.2f%%\n",(money-tempMoney)/tempMoney*100.0);
+    if(money < tempMoney)
+        printf("-%.2f%%\n", (tempMoney-money)/tempMoney*100.0);
 }
 
 int main(void)
@@ -149,7 +144,7 @@ int main(void)
 		printf("2. Advertise [-$%d]\n", advertiseCost);
 		printf("[Enter] = next turn\n");
 		printf("Employees = %d\n", employeeCount);
-		printf("Money = $%d\n\n\n", money);
+		printf("Money = $%.0f\n\n\n", money);
 		printf("Esc to exit\n\n\n\n\n\n");
 		action = getch();
 		if(action == '1') {
@@ -160,7 +155,7 @@ int main(void)
 			printf("Will advertise!\n\n");
 			add_action(ADVERT);
 		}
-		else if(action == '\n') {
+		else if(action == 13) {
 			printf("Processing turn...\n");
 			process_turn();
 		}

@@ -2,7 +2,7 @@
 
 CRandomMother RandGen((unsigned)time(0));
 
-long long money = 0;
+double money = 0;
 
 
 int getrand(int options)

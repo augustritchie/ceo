@@ -11,7 +11,7 @@
 
 using namespace std;
 
-extern long long money;
+extern double money;
 
 extern CRandomMother RandGen;
 
